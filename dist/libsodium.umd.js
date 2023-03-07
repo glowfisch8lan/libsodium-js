@@ -1,7 +1,13 @@
-var libsodium = (function (exports, libsodiumWrappers) {
-    'use strict';
+(function (global, factory) {
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports, require('libsodium-wrappers'), require('buffer/')) :
+    typeof define === 'function' && define.amd ? define(['exports', 'libsodium-wrappers', 'buffer/'], factory) :
+    (global = global || self, factory(global.libsodium = {}, global.libsodiumWrappers, global.buffer));
+}(this, (function (exports, libsodiumWrappers, buffer) { 'use strict';
 
     libsodiumWrappers = libsodiumWrappers && Object.prototype.hasOwnProperty.call(libsodiumWrappers, 'default') ? libsodiumWrappers['default'] : libsodiumWrappers;
+    buffer = buffer && Object.prototype.hasOwnProperty.call(buffer, 'default') ? buffer['default'] : buffer;
+
+    const Buffer = buffer.Buffer;
 
     var encrypt = async (message, key) => {
         return await _encrypt(message, key);
@@ -10,6 +16,16 @@ var libsodium = (function (exports, libsodiumWrappers) {
     var decrypt = async (message, key) => {
         return _decrypt(message, key)
     };
+
+    var generateKey = () => {
+        return _generateKey();
+    };
+
+    async function _generateKey() {
+        await libsodiumWrappers.ready;
+        const key = libsodiumWrappers.crypto_secretstream_xchacha20poly1305_keygen();
+        return Buffer.from(key).toString('hex');
+    }
 
     async function _encrypt(message, key) {
         await libsodiumWrappers.ready;
@@ -60,13 +76,15 @@ var libsodium = (function (exports, libsodiumWrappers) {
 
     var sodium = {
     	encrypt: encrypt,
-    	decrypt: decrypt
+    	decrypt: decrypt,
+    	generateKey: generateKey
     };
 
     exports.decrypt = decrypt;
     exports.default = sodium;
     exports.encrypt = encrypt;
+    exports.generateKey = generateKey;
 
-    return exports;
+    Object.defineProperty(exports, '__esModule', { value: true });
 
-}({}, libsodiumWrappers));
+})));

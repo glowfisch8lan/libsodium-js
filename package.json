@@ -1,14 +1,14 @@
 {
-  "name": "sodium-util",
-  "version": "1.0.0",
+  "name": "sodium-lib",
+  "version": "1.0.2",
   "description": "Package for encryption, decryption by the libsodium library",
   "main": "index.js",
   "scripts": {
     "build": "npm run build:umd & npm run build:es & npm run build:unpkg",
-    "build:umd": "rollup --config build/rollup.config.js --format umd --file dist/drop-zone-file-uploader.umd.js",
-    "build:es": "rollup --config build/rollup.config.js --format es --file dist/drop-zone-file-uploader.esm.js",
-    "build:unpkg": "rollup --config build/rollup.config.js --format iife --file dist/drop-zone-file-uploader.min.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build:umd": "rollup --config build/rollup.config.js --format umd --file dist/libsodium.umd.js",
+    "build:es": "rollup --config build/rollup.config.js --format es --file dist/libsodium.esm.js",
+    "build:unpkg": "rollup --config build/rollup.config.js --format iife --file dist/libsodium.min.js",
+    "test": "node test.js"
   },
   "keywords": [
     "libsodium"
@@ -16,10 +16,11 @@
   "author": "Grigorov D.E.",
   "license": "ISC",
   "dependencies": {
+    "buffer": "^6.0.3",
     "libsodium-wrappers": "^0.7.10"
   },
   "files": [
-    "dist/*",
+    "dist/*"
   ],
   "devDependencies": {
     "rollup": "^1.17.0",

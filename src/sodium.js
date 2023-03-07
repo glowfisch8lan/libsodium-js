@@ -1,11 +1,22 @@
 const _sodium = require('libsodium-wrappers');
+const Buffer = require('buffer/').Buffer
 
 module.exports.encrypt = async (message, key) => {
     return await _encrypt(message, key);
 }
 
 module.exports.decrypt = async (message, key) => {
-    return _decrypt(message, key)
+    return await _decrypt(message, key)
+}
+
+module.exports.generateKey = () => {
+    return _generateKey();
+}
+
+async function _generateKey() {
+    await _sodium.ready;
+    const key = _sodium.crypto_secretstream_xchacha20poly1305_keygen()
+    return Buffer.from(key).toString('hex');
 }
 
 async function _encrypt(message, key) {

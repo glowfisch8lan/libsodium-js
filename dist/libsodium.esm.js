@@ -1,4 +1,7 @@
 import libsodiumWrappers from 'libsodium-wrappers';
+import buffer from 'buffer/';
+
+const Buffer = buffer.Buffer;
 
 var encrypt = async (message, key) => {
     return await _encrypt(message, key);
@@ -7,6 +10,16 @@ var encrypt = async (message, key) => {
 var decrypt = async (message, key) => {
     return _decrypt(message, key)
 };
+
+var generateKey = () => {
+    return _generateKey();
+};
+
+async function _generateKey() {
+    await libsodiumWrappers.ready;
+    const key = libsodiumWrappers.crypto_secretstream_xchacha20poly1305_keygen();
+    return Buffer.from(key).toString('hex');
+}
 
 async function _encrypt(message, key) {
     await libsodiumWrappers.ready;
@@ -57,8 +70,9 @@ function _typedArrayConcat(ResultConstructor, ...arrays) {
 
 var sodium = {
 	encrypt: encrypt,
-	decrypt: decrypt
+	decrypt: decrypt,
+	generateKey: generateKey
 };
 
 export default sodium;
-export { decrypt, encrypt };
+export { decrypt, encrypt, generateKey };
